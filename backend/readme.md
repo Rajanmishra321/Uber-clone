@@ -1,45 +1,93 @@
 # Backend API Documentation
-## `/users/register` Endpoint
 
-## Description
+## `/users/register` Endpoint
+### Description
 This endpoint registers a new user and returns a JSON response containing the user details and an authentication token.
 
-## Request Body
+### Method
+`POST`
+
+### Request Body
 ```json
 {
-  
   "fullname": {
-    "firstname": "John",
-    "lastname": "Doe"  // optional
+    "firstname": "string",
+    "lastname": "string"  // optional
   },
-  "email": "user@example.com",
-  "password": "your password"
+  "email": "string",
+  "password": "string"
 }
 ```
 
 ### Validation Rules
 - `email`: Must be a valid email format.
-- `fullname.firstname`: Must be at least 3 characters long.
+- `firstname`: Must be at least 3 characters long.
 - `password`: Must be at least 6 characters long.
 
-## HTTP Method
-This endpoint uses the `POST` HTTP method to create a new user.
-
 ### Response
-- **201 Created**
+- **201 Created**:
   - Returns a JSON object containing the user and token:
   ```json
   {
     "user": {
       "firstname": "John",
       "lastname": "Doe",
-      "email": "user@example.com"
+      "email": "user@example.com",
+      "password": "hashed_password"
     },
     "token": "your_auth_token"
   }
   ```
 
-- **400 Bad Request**
+- **400 Bad Request**:
+  - Returns validation errors if the input data is invalid:
+  ```json
+  {
+    "error": [
+      {
+        "msg": "Invalid Email",
+        "param": "email",
+        "location": "body"
+      }
+    ]
+  }
+  ```
+
+## `/users/login` Endpoint
+### Description
+This endpoint logs in a user and returns a JSON response containing an authentication token.
+
+### Method
+`POST`
+
+### Request Body
+```json
+{
+  "email": "string",
+  "password": "string"
+}
+```
+
+### Validation Rules
+- `email`: Must be a valid email format.
+- `password`: Must be at least 6 characters long.
+
+### Response
+- **200 OK**:
+  - Returns a JSON object containing the user and token:
+  ```json
+  {
+    "user": {
+      "firstname": "John",
+      "lastname": "Doe",
+      "email": "user@example.com",
+      "password": "hashed_password"
+    },
+    "token": "your_auth_token"
+  }
+  ```
+
+- **400 Bad Request**:
   - Returns validation errors if the input data is invalid:
   ```json
   {

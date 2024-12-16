@@ -3,6 +3,7 @@ const {generateAuthToken} = require('../models/user.model')
 const {comparePassword}=require('../models/user.model')
 const {validationResult}=require('express-validator')
 const {createUser}=require('../services/user.service')
+const blacklisteTokenModel = require('../models/blacklisteToken.model')
 
 module.exports.registerUser=async (req,res,next)=>{
     const error = validationResult(req)
@@ -21,7 +22,6 @@ module.exports.registerUser=async (req,res,next)=>{
     })
 
     const token = await generateAuthToken()
-
     res.status(201).json({user,token})
 }
 
@@ -46,6 +46,17 @@ module.exports.loginUser=async(req,res,next)=>{
     }
 
     const token = await user.generateAuthToken()
-
+    res.cookie('token',token)
     res.status(200).json({token,user})
+}
+
+module.exports.getUserProfile=async(req,res,next)=>{
+    res.status(200).json(req.user)
+}
+
+module.exports.logoutUser=async(req,res,next)=>{
+    res.clearCookie('token')
+    const token = req.cookies.token || req.headers.authorization.split(' ')[1]
+    await blacklisteTokenModel.create({token})
+    res.status(200).json({message:"Logged out successfully"})
 }

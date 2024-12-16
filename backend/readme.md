@@ -100,3 +100,52 @@ This endpoint logs in a user and returns a JSON response containing an authentic
     ]
   }
   ```
+
+## `/user/profile` Endpoint
+### Description
+Retrieves the profile information of the authenticated user.
+
+### Requirements
+- The user must be authenticated (JWT token must be provided).
+
+### Response
+- **200 OK**:
+  - Returns a JSON object containing user details:
+  ```json
+  {
+    "firstname": "John",
+    "lastname": "Doe",
+    "email": "user@example.com"
+  }
+  ```
+
+- **400 Bad Request**:
+  - Returns an error message if the user is not authenticated:
+  ```json
+  {
+    "error": "Unauthorized"
+  }
+  ```
+
+## `/user/logout` Endpoint
+### Description
+Logs out the authenticated user by clearing the token and blacklisting it.
+
+### Requirements
+- The user must be authenticated (JWT token must be provided).
+
+### Response
+- **200 OK**:
+  - Returns a success message:
+  ```json
+  {
+    "message": "Logged out successfully"
+  }
+  ```
+
+- **400 Bad Request**:
+  - Returns an error message if the user is not authenticated:
+  ```json
+  {
+    "error": "Unauthorized"
+  }

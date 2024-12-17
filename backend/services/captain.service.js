@@ -5,7 +5,7 @@ module.exports.createCaptain=async ({firstname,lastname,email,password,color,veh
         throw new Error('Please fill all the fields')
     }
 
-    const captain = captainModel.create({
+    const captain = await captainModel.create({
         fullname:{
             firstname,
             lastname

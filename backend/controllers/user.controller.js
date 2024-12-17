@@ -3,7 +3,7 @@ const {generateAuthToken} = require('../models/user.model')
 const {comparePassword}=require('../models/user.model')
 const {validationResult}=require('express-validator')
 const {createUser}=require('../services/user.service')
-const blacklisteTokenModel = require('../models/blacklisteToken.model')
+const blacklisteTokenModel = require('../models/blacklistToken.model')
 
 module.exports.registerUser=async (req,res,next)=>{
     const error = validationResult(req)

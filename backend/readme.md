@@ -1,18 +1,22 @@
 # Backend API Documentation
 
 ## `/users/register` Endpoint
+
 ### Description
+
 This endpoint registers a new user and returns a JSON response containing the user details and an authentication token.
 
 ### Method
+
 `POST`
 
 ### Request Body
+
 ```json
 {
   "fullname": {
     "firstname": "string",
-    "lastname": "string"  // optional
+    "lastname": "string" // optional
   },
   "email": "string",
   "password": "string"
@@ -20,62 +24,71 @@ This endpoint registers a new user and returns a JSON response containing the us
 ```
 
 ### Validation Rules
-- `email`: Must be a valid email format.
-- `firstname`: Must be at least 3 characters long.
-- `password`: Must be at least 6 characters long.
+
+- **email**: Must be a valid email format.
+- **firstname**: Must be at least 3 characters long.
+- **password**: Must be at least 6 characters long.
 
 ### Response
-- **201 Created**:
-  - Returns a JSON object containing the user and token:
-  ```json
-  {
-    "user": {
-      "firstname": "John",
-      "lastname": "Doe",
-      "email": "user@example.com",
-      "password": "hashed_password"
-    },
-    "token": "your_auth_token"
-  }
-  ```
 
-- **400 Bad Request**:
-  - Returns validation errors if the input data is invalid:
-  ```json
-  {
-    "error": [
-      {
-        "msg": "Invalid Email",
-        "param": "email",
-        "location": "body"
-      }
-    ]
-  }
-  ```
+- **201 Created**: Returns a JSON object containing the user and token:
 
+```json
+{
+  "user": {
+    "firstname": "John",
+    "lastname": "Doe",
+    "email": "user@example.com",
+    "password": "hashed_password"
+  },
+  "token": "your_auth_token"
+}
+```
+
+- **400 Bad Request**: Returns validation errors if the input data is invalid:
+
+```json
+{
+  "error": [
+    {
+      "msg": "Invalid Email",
+      "param": "email",
+      "location": "body"
+    }
+  ]
+}
+```
 ## `/users/login` Endpoint
+
 ### Description
+
 This endpoint logs in a user and returns a JSON response containing an authentication token.
 
 ### Method
+
 `POST`
 
 ### Request Body
+
 ```json
 {
   "email": "string",
   "password": "string"
 }
-```
+````
 
 ### Validation Rules
+
 - `email`: Must be a valid email format.
 - `password`: Must be at least 6 characters long.
 
 ### Response
+
 - **200 OK**:
+
   - Returns a JSON object containing the user and token:
-  ```json
+
+  ````json
   {
     "user": {
       "firstname": "John",
@@ -85,11 +98,11 @@ This endpoint logs in a user and returns a JSON response containing an authentic
     },
     "token": "your_auth_token"
   }
-  ```
+  ````
 
 - **400 Bad Request**:
   - Returns validation errors if the input data is invalid:
-  ```json
+  ````json
   {
     "error": [
       {
@@ -99,71 +112,87 @@ This endpoint logs in a user and returns a JSON response containing an authentic
       }
     ]
   }
-  ```
+  ````
 
-## `/user/profile` Endpoint
+## `/users/profile` Endpoint
+
 ### Description
+
 Retrieves the profile information of the authenticated user.
 
 ### Requirements
+
 The user must be authenticated (JWT token must be provided).
 
 ### Response
+
 - **200 OK**:
+
   - Returns a JSON object containing user details:
-  ```json
+
+  ````json
   {
     "firstname": "John",
     "lastname": "Doe",
     "email": "user@example.com"
   }
-  ```
+  ````
 
 - **400 Bad Request**:
   - Returns an error message if the user is not authenticated:
-  ```json
+  ````json
   {
     "error": "Unauthorized"
   }
-  ```
+  ````
 
-## `/user/logout` Endpoint
+## `/users/logout` Endpoint
+
 ### Description
+
 Logs out the authenticated user by clearing the token and blacklisting it.
 
 ### Requirements
+
 The user must be authenticated (JWT token must be provided).
 
 ### Response
+
 - **200 OK**:
+
   - Returns a success message:
-  ```json
+
+  ````json
   {
     "message": "Logged out successfully"
   }
-  ```
+  ````
 
 - **400 Bad Request**:
   - Returns an error message if the user is not authenticated:
-  ```json
+  ````json
   {
     "error": "Unauthorized"
   }
-  ```
+  ````
 
 ## `/captains/register` Endpoint
+
 ### Description
+
 This endpoint registers a new captain and returns a JSON response containing the captain details.
 
 ### Method
+
 `POST`
 
 ### Request Body
-```json
+
+````json
 {
   "fullname": {
     "firstname": "string",
-    "lastname": "string"  // optional
+    "lastname": "string" // optional
   },
   "email": "string",
   "password": "string",
@@ -174,9 +203,10 @@ This endpoint registers a new captain and returns a JSON response containing the
     "capacity": "integer" // must be at least 1
   }
 }
-```
+````
 
 ### Validation Rules
+
 - `firstname`: Must be at least 3 characters long.
 - `email`: Must be a valid email format.
 - `password`: Must be at least 6 characters long.
@@ -186,9 +216,12 @@ This endpoint registers a new captain and returns a JSON response containing the
 - `vehicle.capacity`: Must be an integer of at least 1.
 
 ### Response
+
 - **200 OK**:
+
   - Returns a JSON object containing the captain details and token:
-  ```json
+
+  ````json
   {
     "token": "your_auth_token",
     "captain": {
@@ -201,11 +234,11 @@ This endpoint registers a new captain and returns a JSON response containing the
       "capacity": "integer"
     }
   }
-  ```
+  ````
 
 - **400 Bad Request**:
   - Returns validation errors if the input data is invalid:
-  ```json
+  ````json
   {
     "errors": [
       {
@@ -215,9 +248,111 @@ This endpoint registers a new captain and returns a JSON response containing the
       }
     ]
   }
-  ```
+  ````
   - Returns a message if the captain already exists:
-  ```json
+  ````json
   {
     "message": "Captain already exist"
   }
+  ````
+
+## `/captains/profile` Endpoint
+
+### Description
+
+Retrieves the profile information of the authenticated captain.
+
+### Requirements
+
+The captain must be authenticated (JWT token must be provided).
+
+### Response
+
+- **200 OK**:
+
+  - Returns a JSON object containing captain details:
+
+  ````json
+  {
+    "firstname": "Your firstname",
+    "lastname": "Your lastname",
+    "email": "Your email",
+    "color": "Vehicle color",
+    "numberPlate": "Vehicle number",
+    "vehicleType": "[car,motorcycle, auto]",
+    "capacity": "Eg. 2,4,5 "
+  }
+  ````
+
+- **400 Bad Request**:
+- Returns an error message if the captain is not authenticated:
+
+## `/captains/logout` Endpoint
+
+### Description
+
+Logs out the authenticated captain by clearing the token and blacklisting it.
+
+### Requirements
+
+The captain must be authenticated (JWT token must be provided).
+
+### Response
+
+- **200 OK**:
+
+  - Returns a success message:
+
+  ```json
+  {
+    "message": "Logged out successfully"
+  }
+  ```
+
+- **400 Bad Request**:
+  - Returns an error message if the captain is not authenticated:
+  ````json
+  {
+    "error": "Unauthorized"
+  }
+  ````
+
+## `/captains/login` Endpoint
+
+### Description
+
+This endpoint allows a captain to log in by providing their email and password.
+
+### Method
+
+`POST`
+
+### Request Body
+
+````json
+{
+  "email": "captain@example.com",
+  "password": "yourpassword"
+}
+````
+
+### Response
+
+- **Success**: Returns a JSON object containing the captain's token and captain details.
+
+````json
+{
+  "token": "your_jwt_token",
+  "captain": {
+    // captain details
+  }
+}
+````
+
+- **Failure**: Returns an error message indicating invalid email or password.
+
+````json
+{
+  "message": "Invalid Email or Password"
+}
+````

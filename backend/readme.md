@@ -106,7 +106,7 @@ This endpoint logs in a user and returns a JSON response containing an authentic
 Retrieves the profile information of the authenticated user.
 
 ### Requirements
-- The user must be authenticated (JWT token must be provided).
+The user must be authenticated (JWT token must be provided).
 
 ### Response
 - **200 OK**:
@@ -132,7 +132,7 @@ Retrieves the profile information of the authenticated user.
 Logs out the authenticated user by clearing the token and blacklisting it.
 
 ### Requirements
-- The user must be authenticated (JWT token must be provided).
+The user must be authenticated (JWT token must be provided).
 
 ### Response
 - **200 OK**:
@@ -148,4 +148,76 @@ Logs out the authenticated user by clearing the token and blacklisting it.
   ```json
   {
     "error": "Unauthorized"
+  }
+  ```
+
+## `/captains/register` Endpoint
+### Description
+This endpoint registers a new captain and returns a JSON response containing the captain details.
+
+### Method
+`POST`
+
+### Request Body
+```json
+{
+  "fullname": {
+    "firstname": "string",
+    "lastname": "string"  // optional
+  },
+  "email": "string",
+  "password": "string",
+  "vehicle": {
+    "color": "string",
+    "vehicleType": "string", // must be one of ['car', 'motorcycle', 'auto']
+    "numberPlate": "string",
+    "capacity": "integer" // must be at least 1
+  }
+}
+```
+
+### Validation Rules
+- `firstname`: Must be at least 3 characters long.
+- `email`: Must be a valid email format.
+- `password`: Must be at least 6 characters long.
+- `vehicle.color`: Must be at least 3 characters long.
+- `vehicle.vehicleType`: Must be one of ['car', 'motorcycle', 'auto'].
+- `vehicle.numberPlate`: Must be at least 3 characters long.
+- `vehicle.capacity`: Must be an integer of at least 1.
+
+### Response
+- **200 OK**:
+  - Returns a JSON object containing the captain details and token:
+  ```json
+  {
+    "token": "your_auth_token",
+    "captain": {
+      "firstname": "string",
+      "lastname": "string",
+      "email": "string",
+      "color": "string",
+      "numberPlate": "string",
+      "vehicleType": "string",
+      "capacity": "integer"
+    }
+  }
+  ```
+
+- **400 Bad Request**:
+  - Returns validation errors if the input data is invalid:
+  ```json
+  {
+    "errors": [
+      {
+        "msg": "Error message",
+        "param": "parameter_name",
+        "location": "body"
+      }
+    ]
+  }
+  ```
+  - Returns a message if the captain already exists:
+  ```json
+  {
+    "message": "Captain already exist"
   }

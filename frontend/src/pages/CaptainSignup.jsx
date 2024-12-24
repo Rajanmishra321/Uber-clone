@@ -1,29 +1,58 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useContext, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { CaptainDataContext } from "../context/CaptainContext";
+import axios from "axios";
 
 const CaptainSignup = () => {
+  const navigate = useNavigate()
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [userData, setUserData] = useState({});
+  const [vehicleColor,setVehicleColor] =useState('')
+  const [vehicleNumberPlate,setVehicleNumberPlate] =useState('')
+  const [vehicleType,setVehicleType] =useState('')
+  const [vehicleCapacity,setVehicleCapacity] =useState('')
+  const {captain, setCaptain}=useContext(CaptainDataContext)
 
-  const submitHandler = (e) => {
+
+
+  const submitHandler = async (e) => {
     e.preventDefault();
 
-    setUserData({
-      fullName: {
-        firstName: firstName,
-        lastName: lastName,
+    const CaptainData={
+      fullname: {
+        firstname: firstName,
+        lastname: lastName,
       },
       email: email,
       password: password,
-    });
-    console.log(userData);
+      vehicle: {
+        color: vehicleColor,
+        numberPlate: vehicleNumberPlate,
+        vehicleType: vehicleType,
+        capacity: vehicleCapacity
+      }
+    };
+
+    const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/captains/register`,CaptainData)
+    // console.log(response)
+    if(response.status===200){
+        const data = response.data
+        setCaptain(data.captain)
+        localStorage.setItem('token',data.token)
+        navigate('/captain-home')
+    }
+
     setFirstName("");
     setLastName("");
     setEmail("");
     setPassword("");
+    setVehicleColor('')
+    setVehicleNumberPlate('')
+    setVehicleType('')
+    setVehicleCapacity('')
+
   };
 
   return (
@@ -82,6 +111,48 @@ const CaptainSignup = () => {
               type="password"
               placeholder="password"
             />
+
+            <h3 className="text-lg mb-2 font-medium ">Vehicle Information?</h3>
+            <div className="flex gap-4 mb-6">
+            <input
+                required
+                value={vehicleColor}
+                onChange={(e) => setVehicleColor(e.target.value)}
+                className="bg-[#eeeeee] rounded border px-4 py-2 w-1/2 text-lg placeholder:text-base"
+                type="text"
+                placeholder="Vehicle's Color"
+              />
+              <input
+                required
+                value={vehicleNumberPlate}
+                onChange={(e) => setVehicleNumberPlate(e.target.value)}
+                className="bg-[#eeeeee] rounded border px-4 py-2 w-1/2 text-lg placeholder:text-base"
+                type="text"
+                placeholder="Vehicle's Number Plate"
+              />
+            </div>
+
+            <div className="flex gap-4 mb-6">
+            <input
+                required
+                value={vehicleCapacity}
+                onChange={(e) => setVehicleCapacity(e.target.value)}
+                className="bg-[#eeeeee] rounded border px-4 py-2 w-1/2 text-lg placeholder:text-base"
+                type="number"
+                placeholder="Vehicle's Capacity"
+              />
+
+              <select
+                required
+                value={vehicleType}
+                onChange={(e) => setVehicleType(e.target.value)}
+                className="bg-[#eeeeee] rounded border px-4 py-2 w-1/2 text-lg placeholder:text-base">
+                <option value="disabled">Select Vehicle Type</option>
+                <option value="car">Car</option>.
+                <option value="motorcycle">Motorcycle</option>
+                <option value="auto"> Auto</option>
+                </select>
+            </div>
 
             <button className="bg-[#111] text-white font-semibold mb-3 rounded  px-4 py-2 w-full">
               Sign Up

@@ -5,4 +5,29 @@ export const SocketContext = createContext();
 
 const socket = io(`${import.meta.env.VITE_BASE_URL}`,)
 
-cons
+const SocketProvider = ({children}) => {
+    useEffect(() => {
+        socket.on("connect", () => {
+            console.log("Connected to socket server");
+        });
+
+        socket.on("disconnect", () => {
+            console.log("Disconnected from socket server");
+        });
+
+        // return () => {
+        //     socket.disconnect();
+        // };
+
+    }, []);
+
+    return (
+        <SocketContext.Provider value={{socket}}>
+            {children}
+        </SocketContext.Provider>
+    );
+
+
+}
+
+export default SocketProvider;

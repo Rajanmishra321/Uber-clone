@@ -7,7 +7,11 @@ import VehiclePanel from "../components/VehiclePanel";
 import ConfirmRidePanel from "../components/ConfirmRidePanel";
 import LookingForDriver from "../components/LookingForDriver";
 import WaitingForDriver from "../components/WaitingForDriver";
+import { SocketContext } from "../context/SocketContext";
 import axios from "axios";
+import { useContext } from "react";
+import { useEffect } from "react";
+import { userDataContext } from "../context/UserContext";
 
 const Home = () => {
   const [pickup, setPickup] = useState("");
@@ -27,10 +31,27 @@ const Home = () => {
   const [vehiclePanel, setVehiclePanel] = useState(false);
   const [vehicleFound, setVehicleFound] = useState(false);
   const [waitingForDriver, setWaitingForDriver] = useState(false);
+  const panelRef = useRef(null);
   const [fare, setFare] = useState({});
   const [vehicleType, setVehicleType] = useState(null);
+  const { socket} = useContext(SocketContext);
+  const { user } = useContext(userDataContext);
+  
 
-  const panelRef = useRef(null);
+  useEffect(() => {
+    socket.emit("join", {userType: "user", userId: user._id});
+  }, [user]);
+  
+  useEffect(()=>{
+    console.log('under usse effect')
+    socket.on("ride-confirmed", (ride) => {
+      console.log('hi');
+      console.log(ride)
+      setVehicleFound(false);
+      setWaitingForDriver(true);
+    })
+  },[user])
+
   const submitHandler = (e) => {
     e.preventDefault();
   };
@@ -310,7 +331,7 @@ const Home = () => {
         className="fixed w-full z-10 bg-white translate-y-full bottom-0 px-3 py-6 pt-12"
       >
         <LookingForDriver
-          // createRide={createRide}
+          createRide={createRide}
           destination={destination}
           pickup={pickup}
           fare={fare[vehicleType]}
@@ -324,6 +345,7 @@ const Home = () => {
       >
         <WaitingForDriver
           setWaitingForDriver={setWaitingForDriver}
+          setVehicleFound={setVehicleFound}
         ></WaitingForDriver>
       </div>
     </div>

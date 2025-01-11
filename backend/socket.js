@@ -1,7 +1,7 @@
 const socketIo = require("socket.io");
 const { Server } = require("socket.io");
 const userModel = require("./models/user.model");
-const captainModel = require("./models/captain.model"); 
+const captainModel = require("./models/captain.model");
 let io;
 
 function initializeSocket(server) {
@@ -19,12 +19,28 @@ function initializeSocket(server) {
 
     socket.on("join", async (data) => {
       const { userId, userType } = data;
+      console.log(`User ${userId} joined as: ${userType}`);
       if (userType === "user") {
-         await userModel.findByIdAndUpdate(userId, { socketId: socket.id });
+        await userModel.findByIdAndUpdate(userId, { socketId: socket.id });
       }
-        if (userType === "captain") {
-            await captainModel.findByIdAndUpdate(userId, { socketId: socket.id });
-        }
+      if (userType === "captain") {
+        await captainModel.findByIdAndUpdate(userId, { socketId: socket.id });
+      }
+    });
+
+    socket.on("update-location-captain", async (data) => {
+      const { userId, location } = data;
+
+      if (!location || !location.ltd || !location.lng) {
+        return socket.emit("error", { message: "Invalid location data" });
+      }
+
+      await captainModel.findByIdAndUpdate(userId, {
+        location: {
+          ltd: location.ltd,
+          lng: location.lng,
+        },
+      });
     });
 
     // Handle client disconnection
@@ -34,9 +50,10 @@ function initializeSocket(server) {
   });
 }
 
-function sendMessageToSocketId(socketId, message) {
+const sendMessageToSocketId=(socketId, messageObject)=> {
+  // console.log(`sending message to ${socketId}`,messageObject)
   if (io) {
-    io.to(socketId).emit("message", message);
+    io.to(socketId).emit(messageObject.event, messageObject.data);
   } else {
     console.log("Socket not found");
   }
@@ -44,5 +61,5 @@ function sendMessageToSocketId(socketId, message) {
 
 module.exports = {
   initializeSocket,
-  //   sendMessageToSocketId,
+  sendMessageToSocketId,
 };

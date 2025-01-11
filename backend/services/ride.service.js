@@ -24,7 +24,6 @@ async function getFare(pickup, destination) {
     throw new Error("Failed to parse distance or time as numeric values");
   }
 
-
   const baseFare = {
     motorcycle: 20,
     car: 50,
@@ -46,16 +45,10 @@ async function getFare(pickup, destination) {
   const fare = {
     motorcycle:
       baseFare.motorcycle +
-      distance * perKmRate.motorcycle +   // Use parsed 'distance'
-      time * perMinuteRate.motorcycle,    // Use parsed 'time'
-    car:
-      baseFare.car +
-      distance * perKmRate.car +
-      time * perMinuteRate.car,
-    auto:
-      baseFare.auto +
-      distance * perKmRate.auto +
-      time * perMinuteRate.auto,
+      distance * perKmRate.motorcycle + // Use parsed 'distance'
+      time * perMinuteRate.motorcycle, // Use parsed 'time'
+    car: baseFare.car + distance * perKmRate.car + time * perMinuteRate.car,
+    auto: baseFare.auto + distance * perKmRate.auto + time * perMinuteRate.auto,
   };
 
   return fare;
@@ -63,13 +56,14 @@ async function getFare(pickup, destination) {
 
 module.exports.getFare = getFare;
 
-function getOtp(num){
-    function generateOtp(num){
-        const otp = crypto.randomInt(Math.pow(10,num-1), Math.pow(10,num)).toString();
-        return otp;
-    }
-    return generateOtp(num);
-
+function getOtp(num) {
+  function generateOtp(num) {
+    const otp = crypto
+      .randomInt(Math.pow(10, num - 1), Math.pow(10, num))
+      .toString();
+    return otp;
+  }
+  return generateOtp(num);
 }
 
 module.exports.createRide = async ({
@@ -90,9 +84,38 @@ module.exports.createRide = async ({
     user,
     pickup,
     destination,
-    otp:getOtp(6),
+    otp: getOtp(6),
     fare: fare[vehicleType],
   });
 
   return ride;
 };
+
+module.exports.confirmRide = async ({
+  rideId, captain
+}) => {
+  if (!rideId) {
+      throw new Error('Ride id is required');
+  }
+
+  await rideModel.findOneAndUpdate({
+      _id: rideId
+  }, {
+      status: 'accepted',
+      captain: captain._id
+  })
+
+  const ride = await rideModel.findOne({
+      _id: rideId
+  }).populate('user')
+  // console.log(ride)
+  // console.log('hi').
+  // till here every thing is fine
+
+  if (!ride) {
+      throw new Error('Ride not found');
+  }
+
+  return ride;
+
+}

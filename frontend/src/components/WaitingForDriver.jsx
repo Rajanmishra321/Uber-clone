@@ -2,12 +2,13 @@ import React from "react";
 
 
 const WaitingForDriver=(props)=>{
+  console.log('hi')
     return(
         <div>
         <h5
           className="p-1 text-center w-[93%] absolute top-0"
           onClick={() => {
-            props.setWaitingForDriver(false);
+            props.WaitingForDriver(false);
           }}
         >
           <i className="text-3xl text-gray-300 ri-arrow-down-wide-fill"></i>

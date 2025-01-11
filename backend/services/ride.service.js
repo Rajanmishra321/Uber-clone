@@ -108,8 +108,7 @@ module.exports.confirmRide = async ({
   const ride = await rideModel.findOne({
       _id: rideId
   }).populate('user')
-  // console.log(ride)
-  // console.log('hi').
+    
   // till here every thing is fine
 
   if (!ride) {

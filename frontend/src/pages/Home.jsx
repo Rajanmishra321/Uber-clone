@@ -34,23 +34,17 @@ const Home = () => {
   const panelRef = useRef(null);
   const [fare, setFare] = useState({});
   const [vehicleType, setVehicleType] = useState(null);
-  const { socket} = useContext(SocketContext);
+  const { socket } = useContext(SocketContext);
   const { user } = useContext(userDataContext);
-  
 
   useEffect(() => {
-    socket.emit("join", {userType: "user", userId: user._id});
+    socket.emit("join", { userType: "user", userId: user._id });
   }, [user]);
-  
-  useEffect(()=>{
-    console.log('under usse effect')
-    socket.on("ride-confirmed", (ride) => {
-      console.log('hi');
-      console.log(ride)
-      setVehicleFound(false);
-      setWaitingForDriver(true);
-    })
-  },[user])
+
+  socket.on("ride-confirmed", (ride) => {
+    setVehicleFound(false);
+    setWaitingForDriver(true);
+  });
 
   const submitHandler = (e) => {
     e.preventDefault();

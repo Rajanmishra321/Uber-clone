@@ -51,7 +51,7 @@ const CaptainHome = () => {
 
     socket.on("new-ride", (data) => {
       setRide(data)
-
+      console.log(data) 
       setRidePopUpPanel(true);
     });
 
@@ -132,13 +132,13 @@ const CaptainHome = () => {
         ref={ridePopUpPanelRef}
         className="fixed w-full z-10 bg-white bottom-0 px-3 py-6 pt-12"
       >
-        {ride && 
+       
         <RidePopUp
           ride={ride}
           setRidePopUpPanel={setRidePopUpPanel}
           setConfirmRidePopUpPanel={setConfirmRidePopUpPanel}
           confirmRide={confirmRide}
-          />}
+          />
       </div>  
 
       <div

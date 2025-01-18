@@ -2,8 +2,6 @@ const mongoose = require('mongoose')
 const bcrypt=require('bcrypt')
 const jwt = require('jsonwebtoken')
 
-
-
 const userSchema = new mongoose.Schema({
     fullname:{
         firstname:{
@@ -28,7 +26,7 @@ const userSchema = new mongoose.Schema({
         select:false
     },
     socketId:{
-        Type:String
+        type:String
     }
 })
 

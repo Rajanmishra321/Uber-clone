@@ -12,6 +12,8 @@ import axios from "axios";
 import { useContext } from "react";
 import { useEffect } from "react";
 import { userDataContext } from "../context/UserContext";
+import { Navigate, useNavigate } from "react-router-dom";
+import LiveTracking from "../components/LiveTracking";
 
 const Home = () => {
   const [pickup, setPickup] = useState("");
@@ -36,7 +38,8 @@ const Home = () => {
   const [vehicleType, setVehicleType] = useState(null);
   const { socket } = useContext(SocketContext);
   const { user } = useContext(userDataContext);
-
+  const [ride, setRide] = useState(null);
+  const navigate = useNavigate()
   useEffect(() => {
     socket.emit("join", { userType: "user", userId: user._id });
   }, [user]);
@@ -44,7 +47,13 @@ const Home = () => {
   socket.on("ride-confirmed", (ride) => {
     setVehicleFound(false);
     setWaitingForDriver(true);
+    setRide(ride);
   });
+
+  socket.on('ride-started',ride=>{
+    setWaitingForDriver(false)
+    navigate('/riding',{state: {ride}})
+  })
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -223,11 +232,7 @@ const Home = () => {
       />
 
       <div className="h-screen w-screen">
-        <img
-          className="h-full w-full object-cover"
-          src="https://miro.medium.com/v2/resize:fit:1400/0*gwMx05pqII5hbfmX.gif"
-          alt="map img."
-        />
+        <LiveTracking></LiveTracking>
       </div>
 
       <div className="flex flex-col justify-end h-screen absolute top-0 w-full ">
@@ -338,6 +343,8 @@ const Home = () => {
         className="fixed w-full z-10 bg-white  bottom-0 px-3 py-6 pt-12"
       >
         <WaitingForDriver
+          ride={ride}
+          waitingForDriver={waitingForDriver}
           setWaitingForDriver={setWaitingForDriver}
           setVehicleFound={setVehicleFound}
         ></WaitingForDriver>

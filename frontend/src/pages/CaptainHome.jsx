@@ -16,7 +16,7 @@ const CaptainHome = () => {
 
   const ridePopUpPanelRef = useRef(null);
   const confirmRidePopUpPanelRef = useRef(null);
-  const [ ride, setRide ] = useState(null)
+  const [ride, setRide] = useState(null);
   // const [passenger,setPassenger] = useState(null)
 
   const { socket } = useContext(SocketContext);
@@ -49,11 +49,11 @@ const CaptainHome = () => {
     updateLocation();
   });
 
-    socket.on("new-ride", (data) => {
-      setRide(data)
-      console.log(data) 
-      setRidePopUpPanel(true);
-    });
+  socket.on("new-ride", (data) => {
+    setRide(data);
+    console.log(data);
+    setRidePopUpPanel(true);
+  });
 
   async function confirmRide() {
     const response = await axios.post(
@@ -66,8 +66,9 @@ const CaptainHome = () => {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-      });
-      // console.log(response)
+      }
+    );
+    // console.log(response)
     setRidePopUpPanel(false);
     setConfirmRidePopUpPanel(true);
   }
@@ -132,20 +133,20 @@ const CaptainHome = () => {
         ref={ridePopUpPanelRef}
         className="fixed w-full z-10 bg-white bottom-0 px-3 py-6 pt-12"
       >
-       
         <RidePopUp
           ride={ride}
           setRidePopUpPanel={setRidePopUpPanel}
           setConfirmRidePopUpPanel={setConfirmRidePopUpPanel}
           confirmRide={confirmRide}
-          />
-      </div>  
+        />
+      </div>
 
       <div
         ref={confirmRidePopUpPanelRef}
         className="fixed w-full h-screen z-10 bg-white bottom-0 px-3 py-6 pt-12"
       >
         <ConfirmRidePopUp
+          ride={ride}
           setConfirmRidePopUpPanel={setConfirmRidePopUpPanel}
           setRidePopUpPanel={setRidePopUpPanel}
         />
